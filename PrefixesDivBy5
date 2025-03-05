@@ -1,0 +1,36 @@
+import java.util.*;
+public class Main{
+    public static Boolean[] prefixDivby5(int[] nums){
+      Boolean[] result=new Boolean[nums.length];
+      int num = 0;
+      for(int i=0;i< nums.length;i++){
+        num= num*2;
+        num=num+nums[i];
+        num=num%5;
+         if(num==0){
+           result[i] = true;
+         }
+         else{
+           result[i] = false;
+         }
+      }
+      return result;
+    }
+    public static void main(String [] args){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("enter the size of the array:");
+        int n = sc.nextInt();
+        int[] nums = new int[n];
+        System.out.println("Enter the binary(0 or 1);");
+        for(int i=0;i<n;i++){
+          nums[i]=sc.nextInt();
+        }
+        Boolean[] answer = prefixDivby5(nums);
+        System.out.println("OUTPUT:");
+        for(int i=0;i<answer.length;i++){
+          System.out.print(answer[i]+ " ");
+        }
+        sc.close();
+    }
+    
+}
