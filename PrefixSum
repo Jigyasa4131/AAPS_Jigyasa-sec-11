@@ -1,0 +1,40 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+      Scanner sc = new Scanner (System.in);
+      System.out.println("Enter the Size of the array;");
+      int n = sc.nextInt();
+      int[] arr = new int[n+1];
+      System.out.println("Enter elements of the array:");
+      for(int i = 1 ; i<=n ; i++){
+        
+        arr[i]=sc.nextInt();
+      }
+      int[] prefix = new int[n-1];
+      prefix[0] = arr[0];
+      for (int i = 1; i < n; i++) {
+          prefix[i] = prefix[i - 1] + arr[i];
+      }
+      System.out.print("Enter number of queries: ");
+        int q = sc.nextInt();
+
+        
+      System.out.println("Enter queries (L R): ");
+      for (int i = 0; i < q; i++) {
+          int L = sc.nextInt();
+          int R = sc.nextInt();
+          
+          int sum=0;  
+          if (L==0){
+            sum = prefix[R];
+          }  
+          else{
+            sum=prefix[R] - prefix[L-1];
+          }
+          System.out.println("Sum from index " + L + " to " + R + " = " + sum);
+        }
+        
+      sc.close();
+    }   
+}
