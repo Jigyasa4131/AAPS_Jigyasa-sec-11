@@ -1,0 +1,17 @@
+#Palindrome using Slicing:
+def is_palindrome(s):
+    return str(s)==str (s)[::-1]
+print(is_palindrome("madam"))
+print(is_palindrome("hello"))
+print(is_palindrome(121))
+
+#Palindrome using For Loop:
+def is_palindrome(s):
+    n = len(s)
+    for i in range(n // 2):
+        if s[i] != s[n - i - 1]:
+            return False
+    return True
+
+print(is_palindrome("racecar")) 
+print(is_palindrome("python"))   
