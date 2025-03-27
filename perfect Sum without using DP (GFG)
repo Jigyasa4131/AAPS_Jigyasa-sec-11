@@ -1,0 +1,22 @@
+class Solution {
+    // Function to calculate the number of subsets with a given sum
+    public int perfectSum(int[] nums, int target) {
+        // code here
+        int n=nums.length;
+        return solve(nums,0,target,n);
+        
+    }
+    public static int solve(int [] arr,int i, int target,int n){
+        if(i==n){
+            if(target==0)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        return solve(arr ,i+1,target,n)+solve(arr,i+1,target-arr[i],n);
+    }
+}
