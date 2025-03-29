@@ -1,0 +1,20 @@
+class Solution {
+    public int getSecondLargest(int[] arr) {
+        // Code Here
+        int largest=arr[0];
+        int n = arr.length;
+        int sec_lar=-1;
+        for(int i=0;i<n;i++){
+            if(arr[i]>largest){
+                sec_lar=largest;
+                largest=arr[i];
+            }
+            
+            else if (sec_lar<arr[i]&&arr[i]<largest){
+                sec_lar=arr[i];
+            }
+            
+        }
+        return sec_lar;
+    }
+}
