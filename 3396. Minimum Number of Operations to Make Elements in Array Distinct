@@ -1,0 +1,11 @@
+class Solution {
+    public int minimumOperations(int[] nums) {
+        Set <Integer> Seen = new HashSet<>();
+        for(int i = nums.length-1 ; i >= 0;--i){
+            if(!Seen.add(nums[i])) {
+                return(i+1+2)/3;
+            }
+        }
+        return 0;
+    }
+}
