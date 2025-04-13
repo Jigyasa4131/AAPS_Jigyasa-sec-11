@@ -1,0 +1,27 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int countGoodNumbers(long n) {
+        long evenCount = (n + 1) / 2;  // digits at even indices
+        long oddCount = n / 2;         // digits at odd indices
+
+        long evenWays = modPow(5, evenCount, MOD);  // 5 choices for even indices
+        long oddWays = modPow(4, oddCount, MOD);    // 4 choices for odd indices
+
+        return (int)((evenWays * oddWays) % MOD);
+    }
+    private long modPow(long base, long exp, int mod) {
+        long result = 1;
+        base %= mod;
+
+        while (exp > 0) {
+            if ((exp & 1) == 1) {  // if exp is odd
+                result = (result * base) % mod;
+            }
+            base = (base * base) % mod;
+            exp >>= 1;  // divide exp by 2
+        }
+
+        return result;
+    }
+}
