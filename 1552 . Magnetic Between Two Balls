@@ -1,0 +1,38 @@
+class Solution {
+    public int maxDistance(int[] position, int m) {
+        Arrays.sort(position);
+        int n = position.length;
+
+        int left = 1; // minimum possible distance
+        int right = position[n - 1] - position[0]; // maximum possible distance
+        int answer = 0;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (canPlaceBalls(position, m, mid)) {
+                answer = mid;
+                left = mid + 1; // try for a larger minimum distance
+            } else {
+                right = mid - 1; // try a smaller minimum distance
+            }
+        }
+
+        return answer;
+    }
+
+    private boolean canPlaceBalls(int[] position, int m, int minDist) {
+        int count = 1; // place first ball at the first position
+        int lastPlaced = position[0];
+        int p = position.length;
+
+        for (int i = 1; i < p; i++) {
+            if (position[i] - lastPlaced >= minDist) {
+                count++;
+                lastPlaced = position[i];
+            }
+        }
+
+        return count >= m;
+    }
+}
