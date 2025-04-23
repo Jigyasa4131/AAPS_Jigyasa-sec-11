@@ -1,0 +1,27 @@
+class Solution {
+    public int countLargestGroup(int n) {
+        int[] count = new int[37]; // max digit sum of 9999 is 36
+        int max = 0;
+
+        for (int i = 1; i <= n; i++) {
+            int sum = digitSum(i);
+            count[sum]++;
+            max = Math.max(max, count[sum]);
+        }
+
+        int res = 0;
+        for (int c : count) {
+            if (c == max) res++;
+        }
+
+        return res;
+    }
+    private int digitSum(int num) {
+        int sum = 0;
+        while (num > 0) {
+            sum += num % 10;
+            num /= 10;
+        }
+        return sum;
+    }
+}
