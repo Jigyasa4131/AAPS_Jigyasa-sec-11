@@ -1,0 +1,24 @@
+class Solution {
+    public long countInterestingSubarrays(List<Integer> nums, int modulo, int k) {
+        Map<Integer, Long> freqMap = new HashMap<>();
+        freqMap.put(0, 1L);  // base case: prefix sum of 0
+        
+        long result = 0;
+        int count = 0;
+
+        for (int num : nums) {
+            if (num % modulo == k) {
+                count++;
+            }
+
+            // target = (count - k + modulo) % modulo
+            int target = (count - k + modulo) % modulo;
+            result += freqMap.getOrDefault(target, 0L);
+
+            int modCount = count % modulo;
+            freqMap.put(modCount, freqMap.getOrDefault(modCount, 0L) + 1);
+        }
+
+        return result;
+    }
+}
