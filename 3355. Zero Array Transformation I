@@ -1,0 +1,31 @@
+class Solution {
+    public boolean isZeroArray(int[] nums, int[][] queries) {
+        int n = nums.length;
+        int[] freq = new int[n + 1];  // Difference array for range updates
+
+        // Step 1: Count how many times each index appears in the queries using a difference array
+        for (int[] query : queries) {
+            int l = query[0], r = query[1];
+            freq[l] += 1;
+            if (r + 1 < n) {
+                freq[r + 1] -= 1;
+            }
+        }
+
+        // Step 2: Compute prefix sum to get the count for each index
+        int[] count = new int[n];
+        count[0] = freq[0];
+        for (int i = 1; i < n; i++) {
+            count[i] = count[i - 1] + freq[i];
+        }
+
+        // Step 3: Check if we can decrement nums[i] that many times
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > count[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
