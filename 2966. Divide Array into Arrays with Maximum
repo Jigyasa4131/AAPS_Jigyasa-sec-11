@@ -1,0 +1,28 @@
+import java.util.*;
+
+class Solution {
+    public int[][] divideArray(int[] nums, int k) {
+        Arrays.sort(nums); // Step 1: Sort the array
+        int n = nums.length;
+
+        // Step 2: If nums cannot be divided into groups of 3, return empty array
+        if (n % 3 != 0) return new int[0][0];
+
+        int[][] result = new int[n / 3][3];
+        int index = 0;
+
+        // Step 3: Traverse in steps of 3
+        for (int i = 0; i < n; i += 3) {
+            // Check if the difference between max and min in the group is > k
+            if (nums[i + 2] - nums[i] > k) return new int[0][0];
+
+            // Step 4: Add this group to result
+            result[index][0] = nums[i];
+            result[index][1] = nums[i + 1];
+            result[index][2] = nums[i + 2];
+            index++;
+        }
+
+        return result;
+    }
+}
