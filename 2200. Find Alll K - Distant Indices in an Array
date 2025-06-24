@@ -1,0 +1,33 @@
+class Solution {
+    public List<Integer> findKDistantIndices(int[] nums, int key, int k) {
+        List<Integer> result = new ArrayList<>();
+        int n = nums.length;
+
+        // First collect all indices where nums[i] == key
+        List<Integer> keyIndices = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == key) {
+                keyIndices.add(i);
+            }
+        }
+
+        // Use a boolean array to mark valid indices
+        boolean[] marked = new boolean[n];
+        for (int index : keyIndices) {
+            int start = Math.max(0, index - k);
+            int end = Math.min(n - 1, index + k);
+            for (int i = start; i <= end; i++) {
+                marked[i] = true;
+            }
+        }
+
+        // Collect all marked indices
+        for (int i = 0; i < n; i++) {
+            if (marked[i]) {
+                result.add(i);
+            }
+        }
+
+        return result;
+    }
+}
