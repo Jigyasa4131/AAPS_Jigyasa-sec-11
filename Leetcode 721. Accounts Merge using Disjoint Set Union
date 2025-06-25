@@ -1,0 +1,57 @@
+class Solution {
+    static class DSU{
+        Map<String, String> parent = new HashMap<>();
+
+        String find(String email){
+            if(!parent.containsKey(email)){
+                parent.put(email, email);
+            }
+            if(!email.equals(parent.get(email))){
+                parent.put(email, find(parent.get(email)));
+            }
+            return parent.get(email);
+        }
+
+        void union(String email1, String email2){
+            String p1 = find(email1);
+            String p2 = find(email2);
+
+            if(!p1.equals(p2)){
+                parent.put(p2, p1);
+            }
+        }
+    }
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        DSU dsu = new DSU();
+        Map<String, String> emailToName = new HashMap<>();
+
+        // Union emails in the same account
+        for (List<String> acc : accounts) {
+            String name = acc.get(0);
+            String firstEmail = acc.get(1);
+            for (int i = 1; i < acc.size(); i++) {
+                String email = acc.get(i);
+                dsu.union(firstEmail, email);
+                emailToName.put(email, name);
+            }
+        }
+
+        
+        Map<String, List<String>> groups = new HashMap<>();
+        for (String email : emailToName.keySet()) {
+            String root = dsu.find(email);
+            groups.computeIfAbsent(root,  x -> new ArrayList<>()).add(email);
+        }
+
+        // Prepare result
+        List<List<String>> result = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : groups.entrySet()) {
+            List<String> emails = entry.getValue();
+            Collections.sort(emails);
+            emails.add(0, emailToName.get(entry.getKey()));
+            result.add(emails);
+        }
+
+        return result;
+    }
+}
