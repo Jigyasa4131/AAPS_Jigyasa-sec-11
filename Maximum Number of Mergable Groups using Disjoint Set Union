@@ -1,0 +1,61 @@
+package Disjoint_Questions;
+
+public class MaxGroupSizeDSU {
+    static int[] parent;
+    static int[] size;
+
+    public static void main(String[] args){
+        int n = 7;
+        int[][] connections = {
+            {0, 1},
+            {1, 2},
+            {3, 4},
+            {5, 6}
+        };
+        int result = findLargestGroup(n, connections);
+        System.out.println(result);
+    }
+
+    public static int findLargestGroup(int n, int[][] connections){
+        parent = new int[n];
+        size = new int[n];
+
+        for(int i = 0; i < n; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
+        for(int[] conn: connections){
+            union(conn[0], conn[1]);
+        }
+
+        int maxGroup = 0;
+        for(int i = 0; i < n; i++){
+            maxGroup = Math.max(maxGroup , size[find(i)]);
+        }
+        return maxGroup;
+    }
+
+    private static int find(int x){
+        if(parent[x] != x){
+            parent[x] = find(parent[x]);
+        }
+
+        return parent[x];
+    }
+
+    private static void union(int x, int y){
+        int rootX = find(x);
+        int rootY = find(y);
+
+        if(rootX != rootY){
+            if(size[rootX] < size[rootY]){
+                parent[rootX] = rootY;
+                size[rootY] += size[rootX];
+            }
+            else{
+                parent[rootY] = rootX;
+                size[rootX] += size[rootY];
+            }
+        }
+    }
+}
