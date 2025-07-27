@@ -1,0 +1,36 @@
+class Solution {
+    public String convert(String s, int numRows) {
+        if (numRows == 1 || numRows >= s.length()) return s;
+
+        StringBuilder[] rows = new StringBuilder[numRows];
+
+        // Initialize each row with empty StringBuilder
+        for (int i = 0; i < numRows; i++) {
+            rows[i] = new StringBuilder();
+        }
+
+        int currentRow = 0;
+        boolean goingDown = false;
+
+        // Traverse the input string
+        for (char c : s.toCharArray()) {
+            rows[currentRow].append(c);
+
+            // Reverse direction when top or bottom row is reached
+            if (currentRow == 0 || currentRow == numRows - 1) {
+                goingDown = !goingDown;
+            }
+
+            // Move up or down
+            currentRow += goingDown ? 1 : -1;
+        }
+
+        // Combine all rows
+        StringBuilder result = new StringBuilder();
+        for (StringBuilder row : rows) {
+            result.append(row);
+        }
+
+        return result.toString();
+    }
+}
