@@ -1,0 +1,64 @@
+class Solution {
+    class SegmentTree {
+        int[] tree;
+        int n;
+
+        SegmentTree(int[] baskets) {
+            n = baskets.length;
+            tree = new int[4 * n];
+            build(baskets, 0, n - 1, 0);
+        }
+
+        void build(int[] arr, int l, int r, int i) {
+            if (l == r) {
+                tree[i] = arr[l];
+                return;
+            }
+            int mid = (l + r) / 2;
+            build(arr, l, mid, 2 * i + 1);
+            build(arr, mid + 1, r, 2 * i + 2);
+            tree[i] = Math.max(tree[2 * i + 1], tree[2 * i + 2]);
+        }
+
+        // Query to find the leftmost index with capacity >= val
+        int query(int l, int r, int val, int start, int end, int i) {
+            if (tree[i] < val || end < l || start > r) return -1;
+
+            if (start == end) return start;
+
+            int mid = (start + end) / 2;
+            int left = query(l, r, val, start, mid, 2 * i + 1);
+            if (left != -1) return left;
+            return query(l, r, val, mid + 1, end, 2 * i + 2);
+        }
+
+        void update(int index, int value, int start, int end, int i) {
+            if (start == end) {
+                tree[i] = value;
+                return;
+            }
+            int mid = (start + end) / 2;
+            if (index <= mid)
+                update(index, value, start, mid, 2 * i + 1);
+            else
+                update(index, value, mid + 1, end, 2 * i + 2);
+            tree[i] = Math.max(tree[2 * i + 1], tree[2 * i + 2]);
+        }
+    }
+
+    public int numOfUnplacedFruits(int[] fruits, int[] baskets) {
+        int n = fruits.length;
+        SegmentTree segTree = new SegmentTree(baskets);
+        int unplaced = 0;
+
+        for (int fruit : fruits) {
+            int index = segTree.query(0, n - 1, fruit, 0, n - 1, 0);
+            if (index == -1) {
+                unplaced++;
+            } else {
+                segTree.update(index, -1, 0, n - 1, 0); // mark basket as used
+            }
+        }
+        return unplaced;
+    }
+}
