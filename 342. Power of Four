@@ -1,0 +1,12 @@
+class Solution {
+    public boolean isPowerOfFour(int n) {
+        // 1. Must be positive
+        if (n <= 0) return false;
+        
+        // 2. Must be a power of two (only one bit set)
+        if ((n & (n - 1)) != 0) return false;
+        
+        // 3. That single bit must be in an odd position (mask check)
+        return (n & 0x55555555) != 0;
+    }
+}
