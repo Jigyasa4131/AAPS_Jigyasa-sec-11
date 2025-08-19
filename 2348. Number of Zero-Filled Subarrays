@@ -1,0 +1,17 @@
+class Solution {
+    public long zeroFilledSubarray(int[] nums) {
+        long ans = 0;
+        long count = 0;
+
+        for (int num : nums) {
+            if (num == 0) {
+                count++;        // extend the streak of zeros
+                ans += count;   // add all subarrays ending here
+            } else {
+                count = 0;      // reset streak
+            }
+        }
+
+        return ans;
+    }
+}
