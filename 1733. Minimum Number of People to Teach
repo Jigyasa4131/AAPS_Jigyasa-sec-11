@@ -1,0 +1,50 @@
+import java.util.*;
+
+class Solution {
+    public int minimumTeachings(int n, int[][] languages, int[][] friendships) {
+        // Step 1: Build knowledge map
+        Map<Integer, Set<Integer>> knows = new HashMap<>();
+        for (int i = 0; i < languages.length; i++) {
+            knows.put(i + 1, new HashSet<>());
+            for (int lang : languages[i]) {
+                knows.get(i + 1).add(lang);
+            }
+        }
+
+        // Step 2: Collect problematic users
+        Set<Integer> problematicUsers = new HashSet<>();
+        for (int[] f : friendships) {
+            int u = f[0], v = f[1];
+            Set<Integer> su = knows.get(u);
+            Set<Integer> sv = knows.get(v);
+            
+            boolean canTalk = false;
+            for (int lang : su) {
+                if (sv.contains(lang)) {
+                    canTalk = true;
+                    break;
+                }
+            }
+            if (!canTalk) {
+                problematicUsers.add(u);
+                problematicUsers.add(v);
+            }
+        }
+
+        // Step 3: If no problematic users, answer is 0
+        if (problematicUsers.isEmpty()) return 0;
+
+        // Step 4: Try teaching each language
+        int ans = Integer.MAX_VALUE;
+        for (int lang = 1; lang <= n; lang++) {
+            int cnt = 0;
+            for (int person : problematicUsers) {
+                if (!knows.get(person).contains(lang)) {
+                    cnt++;
+                }
+            }
+            ans = Math.min(ans, cnt);
+        }
+        return ans;
+    }
+}
