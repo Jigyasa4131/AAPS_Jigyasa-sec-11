@@ -1,0 +1,34 @@
+class Solution {
+    public String sortVowels(String s) {
+        // Set of vowels for quick checking
+        String vowels = "AEIOUaeiou";
+        HashSet<Character> vowelSet = new HashSet<>();
+        for (char c : vowels.toCharArray()) {
+            vowelSet.add(c);
+        }
+        
+        // Collect vowels in list
+        List<Character> vowelList = new ArrayList<>();
+        for (char c : s.toCharArray()) {
+            if (vowelSet.contains(c)) {
+                vowelList.add(c);
+            }
+        }
+        
+        // Sort vowels
+        Collections.sort(vowelList);
+        
+        // Rebuild the string
+        StringBuilder result = new StringBuilder();
+        int idx = 0;
+        for (char c : s.toCharArray()) {
+            if (vowelSet.contains(c)) {
+                result.append(vowelList.get(idx++));
+            } else {
+                result.append(c);
+            }
+        }
+        
+        return result.toString();
+    }
+}
