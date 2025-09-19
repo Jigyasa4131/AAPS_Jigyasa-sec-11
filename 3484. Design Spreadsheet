@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Spreadsheet {
+    private Map<String, Integer> cellValues;
+
+    public Spreadsheet(int rows) {
+        cellValues = new HashMap<>();
+        // Note: `rows` is not strictly needed for correctness here,
+        // but could be used for validation if needed.
+    }
+
+    public void setCell(String cell, int value) {
+        cellValues.put(cell, value);
+    }
+
+    public void resetCell(String cell) {
+        // We can either remove the entry, or set to 0.
+        // Removing is more memory efficient.
+        cellValues.remove(cell);
+    }
+
+    public int getValue(String formula) {
+        // formula guaranteed to start with '=' and have exactly one '+'
+        // e.g. "=A1+B2", "=5+A1", "=10+20", etc.
+
+        // Remove leading '='
+        String expr = formula.substring(1);
+        // Split by '+'
+        String[] parts = expr.split("\\+");
+        if (parts.length != 2) {
+            // According to problem constraints, there should always be exactly 2 operands
+            // But you could handle errors or unexpected input here.
+            throw new IllegalArgumentException("Invalid formula: " + formula);
+        }
+        int sum = 0;
+        for (String part : parts) {
+            part = part.trim();
+            if (part.isEmpty()) continue;
+            // Check if it's a number or cell reference
+            char c0 = part.charAt(0);
+            if (Character.isDigit(c0)) {
+                sum += Integer.parseInt(part);
+            } else {
+                // Cell reference
+                sum += cellValues.getOrDefault(part, 0);
+            }
+        }
+        return sum;
+    }
+}
+
+
+/**
+ * Your Spreadsheet object will be instantiated and called as such:
+ * Spreadsheet obj = new Spreadsheet(rows);
+ * obj.setCell(cell,value);
+ * obj.resetCell(cell);
+ * int param_3 = obj.getValue(formula);
+ */
