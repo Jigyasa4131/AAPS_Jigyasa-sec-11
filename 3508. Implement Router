@@ -1,0 +1,86 @@
+import java.util.*;
+
+class Router {
+
+    static class Packet {
+        int source, destination, timestamp;
+        Packet(int s, int d, int t) {
+            source = s; destination = d; timestamp = t;
+        }
+    }
+
+    private int memoryLimit;
+    private Deque<Packet> queue;                      // FIFO order of packets
+    private Set<String> unique;                       // to detect duplicates
+    private Map<Integer, List<Integer>> destMap;      // destination -> timestamps
+    private Map<Integer, Integer> processedCount;     // destination -> how many removed
+
+    public Router(int memoryLimit) {
+        this.memoryLimit = memoryLimit;
+        this.queue = new ArrayDeque<>();
+        this.unique = new HashSet<>();
+        this.destMap = new HashMap<>();
+        this.processedCount = new HashMap<>();
+    }
+
+    public boolean addPacket(int source, int destination, int timestamp) {
+        String key = source + "#" + destination + "#" + timestamp;
+        if (unique.contains(key)) return false; // duplicate
+
+        if (queue.size() == memoryLimit) {
+            forwardPacket(); // remove oldest if full
+        }
+
+        Packet p = new Packet(source, destination, timestamp);
+        queue.offerLast(p);
+        unique.add(key);
+
+        destMap.computeIfAbsent(destination, k -> new ArrayList<>()).add(timestamp);
+        return true;
+    }
+
+    public List<Integer> forwardPacket() {
+        if (queue.isEmpty()) return new ArrayList<>();
+
+        Packet p = queue.pollFirst();
+        String key = p.source + "#" + p.destination + "#" + p.timestamp;
+        unique.remove(key);
+
+        // mark one more removed for this destination
+        processedCount.put(p.destination, processedCount.getOrDefault(p.destination, 0) + 1);
+
+        return Arrays.asList(p.source, p.destination, p.timestamp);
+    }
+
+    public int getCount(int destination, int startTime, int endTime) {
+        if (!destMap.containsKey(destination)) return 0;
+        List<Integer> times = destMap.get(destination);
+        int startIdx = processedCount.getOrDefault(destination, 0);
+
+        // binary search in [startIdx .. end)
+        int lo = lowerBound(times, startIdx, times.size(), startTime);
+        int hi = upperBound(times, startIdx, times.size(), endTime);
+
+        return hi - lo;
+    }
+
+    // first index >= target
+    private int lowerBound(List<Integer> arr, int l, int r, int target) {
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (arr.get(m) >= target) r = m;
+            else l = m + 1;
+        }
+        return l;
+    }
+
+    // first index > target
+    private int upperBound(List<Integer> arr, int l, int r, int target) {
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (arr.get(m) > target) r = m;
+            else l = m + 1;
+        }
+        return l;
+    }
+}
