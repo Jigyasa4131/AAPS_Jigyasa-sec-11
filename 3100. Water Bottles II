@@ -1,0 +1,16 @@
+class Solution {
+    public int maxBottlesDrunk(int numBottles, int numExchange) {
+        int total = numBottles; // total bottles drunk
+        int empty = numBottles; // empty bottles available
+        
+        while (empty >= numExchange) {
+            // Exchange empty bottles
+            empty -= numExchange;
+            numExchange++; // increment exchange requirement
+            total++; // drank 1 new bottle
+            empty++; // new empty bottle after drinking
+        }
+        
+        return total;
+    }
+}
