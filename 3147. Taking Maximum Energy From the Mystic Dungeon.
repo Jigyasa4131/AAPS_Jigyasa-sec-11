@@ -1,0 +1,20 @@
+class Solution {
+    public int maximumEnergy(int[] energy, int k) {
+        int n = energy.length;
+        int max = Integer.MIN_VALUE;
+
+        // Only endpoints in [n-k, n-1] need to be considered
+        for (int i = n - 1; i >= n - k; i--) {
+            int sum = 0;
+            // Go backwards by step k
+            for (int j = i; j >= 0; j -= k) {
+                sum += energy[j];
+                if (sum > max) {
+                    max = sum;
+                }
+            }
+        }
+
+        return max;
+    }
+}
