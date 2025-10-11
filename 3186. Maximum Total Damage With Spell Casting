@@ -1,0 +1,40 @@
+import java.util.*;
+
+class Solution {
+    public long maximumTotalDamage(int[] power) {
+        // Count frequency of each damage
+        Map<Integer, Integer> freq = new HashMap<>();
+        for (int x : power) {
+            freq.merge(x, 1, Integer::sum);
+        }
+        // Get sorted list of unique damage values
+        List<Integer> uniq = new ArrayList<>(freq.keySet());
+        Collections.sort(uniq);
+        int n = uniq.size();
+        // dp[i] = maximum damage using up to index i in uniq (inclusive)
+        long[] dp = new long[n];
+        
+        for (int i = 0; i < n; i++) {
+            long take = (long) uniq.get(i) * freq.get(uniq.get(i));
+            // find index j < i such that uniq[j] <= uniq[i] - 3
+            int low = 0, high = i - 1, best = -1;
+            int need = uniq.get(i) - 3;
+            while (low <= high) {
+                int mid = (low + high) / 2;
+                if (uniq.get(mid) <= need) {
+                    best = mid;
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            }
+            if (best >= 0) {
+                take += dp[best];
+            }
+            
+            long skip = (i > 0 ? dp[i - 1] : 0);
+            dp[i] = Math.max(skip, take);
+        }
+        return dp[n - 1];
+    }
+}
