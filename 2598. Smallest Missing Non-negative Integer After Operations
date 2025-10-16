@@ -1,0 +1,19 @@
+class Solution {
+    public int findSmallestInteger(int[] nums, int value) {
+        int n = nums.length;
+        int[] count = new int[value];
+        
+        // Count the frequency of each remainder modulo 'value'
+        for (int num : nums) {
+            int mod = ((num % value) + value) % value; // handle negative numbers
+            count[mod]++;
+        }
+        
+        // Find the smallest non-negative integer not representable
+        for (int x = 0; ; x++) {
+            int mod = x % value;
+            if (count[mod] == 0) return x;
+            count[mod]--;
+        }
+    }
+}
