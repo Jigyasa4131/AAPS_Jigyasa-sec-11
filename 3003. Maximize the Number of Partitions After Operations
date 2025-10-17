@@ -1,0 +1,71 @@
+import java.util.*;
+
+class Solution {
+    private String s;
+    private int k;
+    // memo: key = (i, curMask, canChange) → maximum partitions from this state
+    private Map<Long, Integer> memo;  // use a combined long key
+
+    public int maxPartitionsAfterOperations(String s, int k) {
+        this.s = s;
+        this.k = k;
+        this.memo = new HashMap<>();
+        // We design dfs to return **the number of partitions minus 1**, so add +1 at the end (or adjust base case accordingly)
+        // Here we choose to let dfs count *additional* partitions, and add 1 in the top-level call.
+        return dfs(0, 0, 1) + 1;
+    }
+
+    /**
+     * @param i         current index in string
+     * @param curMask   bitmask of distinct characters in the current ongoing partition
+     * @param canChange 1 if we still have the option to change one character, 0 otherwise
+     * @return the maximum number of *additional* partitions (i.e. beyond the current one) achievable from index i
+     */
+    private int dfs(int i, int curMask, int canChange) {
+        int n = s.length();
+        if (i >= n) {
+            // no more characters to process → no further partitions
+            return 0;
+        }
+        // Build a unique key combining i, curMask, canChange into a long
+        // We can allocate bits: i up to ~10⁴ (needs ~14 bits), curMask up to 2^26 (fits in 26 bits), canChange is 1 bit
+        // For safety, shift i by 27 bits, canChange 26th bit, curMask in low bits
+        long key = (((long)i) << 27) | (((long)canChange) << 26) | (long)curMask;
+        if (memo.containsKey(key)) {
+            return memo.get(key);
+        }
+
+        int ans = 0;
+
+        // Option 1: do not change current character
+        int bit = 1 << (s.charAt(i) - 'a');
+        int newMask = curMask | bit;
+        if (Integer.bitCount(newMask) > k) {
+            // cannot include this char in current partition → start a new partition here
+            // so we “close” the current partition and start new with this char
+            ans = 1 + dfs(i + 1, bit, canChange);
+        } else {
+            // we can continue adding to current partition
+            ans = dfs(i + 1, newMask, canChange);
+        }
+
+        // Option 2: change this character (if allowed)
+        if (canChange == 1) {
+            // Try replacing s[i] with each possible letter 'a' to 'z'
+            for (int c = 0; c < 26; c++) {
+                int bit2 = 1 << c;
+                int mask2 = curMask | bit2;
+                if (Integer.bitCount(mask2) > k) {
+                    // starting a new partition with this replaced character
+                    ans = Math.max(ans, 1 + dfs(i + 1, bit2, 0));
+                } else {
+                    // continue same partition with replaced char
+                    ans = Math.max(ans, dfs(i + 1, mask2, 0));
+                }
+            }
+        }
+
+        memo.put(key, ans);
+        return ans;
+    }
+}
